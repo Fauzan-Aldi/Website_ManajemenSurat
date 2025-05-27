@@ -2,27 +2,25 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run(): void
+    public function run()
     {
-        User::factory()->create([
-            'name' => 'Administrator',
-            'email' => 'admin@admin.com',
-            'phone' => '082121212121',
-            'password' => Hash::make('admin'),
-            'role' => Role::ADMIN->status(),
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@admin.com'], // cari berdasarkan email
+            [
+                'name' => 'Administrator',
+                'email_verified_at' => now(),
+                'password' => Hash::make('admin123'), // ganti dengan password default kamu
+                'remember_token' => Str::random(10),
+                'phone' => '082121212121',
+                'role' => 'admin',
+            ]
+        );
     }
 }

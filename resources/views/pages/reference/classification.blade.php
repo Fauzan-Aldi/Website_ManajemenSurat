@@ -1,14 +1,14 @@
 @extends('layout.main')
 
+
 @push('script')
     <script>
         $(document).on('click', '.btn-edit', function () {
             const id = $(this).data('id');
-            $('#editModal form').attr('action', '{{ route('reference.classification.index') }}/' + id);
+            const route = "{{ route('reference.classification.index') }}";
+            $('#editModal form').attr('action', route + '/' + id);
             $('#editModal input:hidden#id').val(id);
-            $('#editModal input#code').val($(this).data('code'));
-            $('#editModal input#type').val($(this).data('type'));
-            $('#editModal input#description').val($(this).data('description'));
+            $('#editModal input#status').val($(this).data('status'));
         });
     </script>
 @endpush

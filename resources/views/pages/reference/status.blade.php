@@ -4,7 +4,8 @@
     <script>
         $(document).on('click', '.btn-edit', function () {
             const id = $(this).data('id');
-            $('#editModal form').attr('action', '{{ route('reference.status.index') }}/' + id);
+            const route = "{{ route('reference.status.index') }}";
+            $('#editModal form').attr('action', route + '/' + id);
             $('#editModal input:hidden#id').val(id);
             $('#editModal input#status').val($(this).data('status'));
         });
