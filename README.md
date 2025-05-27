@@ -1,10 +1,3 @@
-<p align="center">
-  <a href="https://404notfound.fun" target="_blank">
-    <img src="https://avatars.githubusercontent.com/u/87377917?s=200&v=4" width="200" alt="404NFID Logo">
-  </a>
-</p>
-
-
 ## Laravel Surat Menyurat v1 🚀
 
 Sebuah aplikasi web yang dirancang untuk mengelola surat masuk, keluar, dan disposisi dengan lebih efisien, cepat, dan terorganisir. Dengan fitur pencatatan, pencarian, serta pelacakan surat yang intuitif, proses administrasi jadi lebih simpel dan nggak ribet!
