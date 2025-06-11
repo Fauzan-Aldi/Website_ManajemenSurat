@@ -39,6 +39,3 @@ Sebuah Web yang dirancang untuk mengelola surat masuk, keluar, dan disposisi den
   - Konfigurasi kata sandi bawaan
   - Atur jumlah data per halaman
   - Ubah identitas aplikasi & institusi (nama, alamat, kontak)
-![Database Schema](database_schema.png)
-
-Bisa didownload di [sini](docs/surat.sql).
