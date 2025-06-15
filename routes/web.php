@@ -65,4 +65,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/upload-pdf', [EncryptedFileController::class, 'upload'])->name('upload.pdf');
     Route::get('/decrypt/{id}', [EncryptedFileController::class, 'decrypt'])->name('file.decrypt');
     Route::get('/download/{id}', [EncryptedFileController::class, 'download'])->name('file.download');
+    Route::delete('/files/{id}', [EncryptedFileController::class, 'destroy'])->name('files.destroy'); // ✅ Tambahan route hapus file
 });

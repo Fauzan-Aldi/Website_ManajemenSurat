@@ -47,7 +47,12 @@
                     <td>{{ $file->created_at }}</td>
                     <td>
                         <a href="{{ route('file.decrypt', $file->id) }}">🔓 Dekripsi</a> |
-                        <a href="{{ route('file.download', $file->id) }}">📥 Download</a>
+                        <a href="{{ route('file.download', $file->id) }}">📥 Download</a> |
+                        <form action="{{ route('files.destroy', $file->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus file ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger">🗑️ Hapus</button>
+                        </form>
                     </td>
                 </tr>
             @empty

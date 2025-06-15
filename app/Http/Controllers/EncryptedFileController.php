@@ -11,21 +11,20 @@ class EncryptedFileController extends Controller
 {
     // Menampilkan daftar file terenkripsi (dengan pencarian opsional)
     public function index(Request $request)
-{
-    $files = EncryptedFile::all();
+    {
+        $files = EncryptedFile::all();
 
-    // Pencarian berdasarkan nama (setelah dekripsi)
-    if ($request->has('search')) {
-        $search = strtolower($request->search);
-        $files = $files->filter(function ($file) use ($search) {
-            $decryptedName = EncryptHelper::decryptContent($file->original_name);
-            return stripos($decryptedName, $search) !== false;
-        });
+        // Pencarian berdasarkan nama (setelah dekripsi)
+        if ($request->has('search')) {
+            $search = strtolower($request->search);
+            $files = $files->filter(function ($file) use ($search) {
+                $decryptedName = EncryptHelper::decryptContent($file->original_name);
+                return stripos($decryptedName, $search) !== false;
+            });
+        }
+
+        return view('files.index', compact('files'));
     }
-
-    return view('files.index', compact('files'));
-}
-
 
     // Upload dan enkripsi file PDF
     public function upload(Request $request)
@@ -41,19 +40,21 @@ class EncryptedFileController extends Controller
     // 🔐 Enkripsi isi file
     $encryptedContent = EncryptHelper::encryptContent($fileContent);
 
-    // 🔐 Enkripsi nama asli file
+    // 🔐 Enkripsi nama asli file untuk disimpan di database
     $encryptedOriginalName = EncryptHelper::encryptContent($originalName);
 
-    // Nama file enkripsi yang disimpan di storage
-    $encryptedName = 'enc_' . time() . '.pdf.enc';
-    $path = 'public/attachments/' . $encryptedName;
+    // 🔐 Enkripsi nama file (tanpa karakter khusus)
+    $encryptedNameRaw = EncryptHelper::encryptContent(pathinfo($originalName, PATHINFO_FILENAME));
+    $encryptedNameSafe = preg_replace('/[^A-Za-z0-9]/', '', base64_encode($encryptedNameRaw));
+    $encryptedName = $encryptedNameSafe . '.enc';
 
-    // Simpan ke storage
+    // Simpan file terenkripsi ke storage
+    $path = 'public/attachments/' . $encryptedName;
     Storage::put($path, $encryptedContent);
 
-    // Simpan ke database dengan nama asli yang sudah terenkripsi
+    // Simpan metadata ke database
     EncryptedFile::create([
-        'original_name' => $encryptedOriginalName, // <- sudah terenkripsi
+        'original_name' => $originalName,
         'encrypted_name' => $encryptedName,
         'path' => $path,
     ]);
@@ -88,5 +89,27 @@ class EncryptedFileController extends Controller
         }
 
         return response()->download(storage_path('app/' . $decryptedPath));
+    }
+
+    // ✅ Hapus file terenkripsi & hasil dekripsi (jika ada)
+    public function destroy($id)
+    {
+        $file = EncryptedFile::findOrFail($id);
+
+        // Hapus file terenkripsi
+        if (Storage::exists($file->path)) {
+            Storage::delete($file->path);
+        }
+
+        // Hapus file hasil dekripsi juga jika ada
+        $decryptedPath = 'public/attachments/decrypted_' . $file->original_name;
+        if (Storage::exists($decryptedPath)) {
+            Storage::delete($decryptedPath);
+        }
+
+        // Hapus data dari database
+        $file->delete();
+
+        return back()->with('success', 'File berhasil dihapus.');
     }
 }
