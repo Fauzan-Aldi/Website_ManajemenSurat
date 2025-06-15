@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FileEncryptController;
+use App\Http\Controllers\EncryptedFileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,23 +22,16 @@ Route::middleware(['auth'])->group(function () {
         ->except(['show', 'edit', 'create'])
         ->middleware(['role:admin']);
 
-    Route::get('profile', [\App\Http\Controllers\PageController::class, 'profile'])
-        ->name('profile.show');
-    Route::put('profile', [\App\Http\Controllers\PageController::class, 'profileUpdate'])
-        ->name('profile.update');
+    Route::get('profile', [\App\Http\Controllers\PageController::class, 'profile'])->name('profile.show');
+    Route::put('profile', [\App\Http\Controllers\PageController::class, 'profileUpdate'])->name('profile.update');
     Route::put('profile/deactivate', [\App\Http\Controllers\PageController::class, 'deactivate'])
         ->name('profile.deactivate')
         ->middleware(['role:staff']);
 
-    Route::get('settings', [\App\Http\Controllers\PageController::class, 'settings'])
-        ->name('settings.show')
-        ->middleware(['role:admin']);
-    Route::put('settings', [\App\Http\Controllers\PageController::class, 'settingsUpdate'])
-        ->name('settings.update')
-        ->middleware(['role:admin']);
+    Route::get('settings', [\App\Http\Controllers\PageController::class, 'settings'])->name('settings.show')->middleware(['role:admin']);
+    Route::put('settings', [\App\Http\Controllers\PageController::class, 'settingsUpdate'])->name('settings.update')->middleware(['role:admin']);
 
-    Route::delete('attachment', [\App\Http\Controllers\PageController::class, 'removeAttachment'])
-        ->name('attachment.destroy');
+    Route::delete('attachment', [\App\Http\Controllers\PageController::class, 'removeAttachment'])->name('attachment.destroy');
 
     Route::prefix('transaction')->as('transaction.')->group(function () {
         Route::resource('incoming', \App\Http\Controllers\IncomingLetterController::class);
@@ -61,4 +56,13 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('status', \App\Http\Controllers\LetterStatusController::class)->except(['show', 'create', 'edit']);
     });
 
+    // Tambahan: Route untuk enkripsi dan dekripsi PDF
+    Route::get('/encrypt-pdf/{filename}', [FileEncryptController::class, 'encryptPdf']);
+    Route::get('/decrypt-pdf/{filename}', [FileEncryptController::class, 'decryptPdf']);
+
+    // Tambahan: Route untuk fitur file terenkripsi
+    Route::get('/files', [EncryptedFileController::class, 'index']);
+    Route::post('/upload-pdf', [EncryptedFileController::class, 'upload'])->name('upload.pdf');
+    Route::get('/decrypt/{id}', [EncryptedFileController::class, 'decrypt'])->name('file.decrypt');
+    Route::get('/download/{id}', [EncryptedFileController::class, 'download'])->name('file.download');
 });

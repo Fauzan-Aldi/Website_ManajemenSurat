@@ -213,4 +213,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'encryption_key' => env('ENCRYPTION_KEY'),
+    'encryption_iv' => env('ENCRYPTION_IV'),
+
 ];

@@ -33,6 +33,30 @@
             "Tests\\": "tests/"
         }
     },
+
+    "autoload-encrypt": {
+    "psr-4": {
+        "App\\": "app/"
+    },
+    "files": [
+        "app/Helpers/EncryptHelper.php"
+    ]
+},
+    "autoload-pint": {
+    "psr-4": {
+        "App\\": "app/"
+    },
+    "exclude-from-classmap": [
+        "vendor/laravel/pint"
+    ]
+    
+},
+"autoload-encrypthelper": {
+    "files": [
+        "app/Helpers/EncryptHelper.php"
+    ]
+},
+
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
